@@ -17,6 +17,7 @@
         <module>safeplace-service</module>
         <module>schedule-service</module>
         <module>event-service</module>
+        <module>docker</module>
     </modules>
 
     <properties>
