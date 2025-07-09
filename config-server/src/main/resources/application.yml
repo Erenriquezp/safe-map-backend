@@ -7,9 +7,9 @@ spring:
       server:
         git:
           # if using local directory:
-          uri: file://${user.home}/safe-map-backend/config-repo
+          #uri: file://${user.home}/safe-map-backend/config-repo
           # or remote git repo:
-          # uri: https://github.com/your-user/safe-map-configs
+          uri: https://github.com/Erenriquezp/safe-map-backend
           default-label: main
 management:
   endpoints:
