@@ -1,0 +1,18 @@
+server:
+  port: 8888
+
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          # if using local directory:
+          uri: file://${user.home}/safe-map-backend/config-repo
+          # or remote git repo:
+          # uri: https://github.com/your-user/safe-map-configs
+          default-label: main
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,env
