@@ -10,7 +10,7 @@ spring:
           #uri: file://${user.home}/safe-map-backend/config-repo
           # or remote git repo:
           uri: https://github.com/Erenriquezp/safe-map-backend
-          default-label: main
+          default-label: master
 management:
   endpoints:
     web:
