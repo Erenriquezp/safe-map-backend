@@ -1,0 +1,25 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: schedule-service
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/safemap_schedules
+  config:
+    import: optional:configserver:http://localhost:8888
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    hostname: localhost
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

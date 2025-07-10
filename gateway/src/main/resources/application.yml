@@ -15,17 +15,21 @@ spring:
               lower-case-service-id: true
           routes:
             - id: user-service
-              uri: http://localhost:8081
+              uri: lb://user-service
               predicates:
                 - Path=/users/**
             - id: safeplace-service
-              uri: http://localhost:8082
+              uri: lb://safeplace-service
               predicates:
                 - Path=/places/**
-            - id: service3
-              uri: lb://service3
+            - id: schedule-service
+              uri: lb://schedule-service
               predicates:
-                - Path=/service3/**
+                - Path=/schedules/**
+            - id: event-service
+              uri: lb://event-service
+              predicates:
+                - Path=/events/**
 
 eureka:
   client:
