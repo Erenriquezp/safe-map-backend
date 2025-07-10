@@ -3,30 +3,42 @@ server:
 
 spring:
   application:
-    name: api-gateway
+    name: gateway
+
   cloud:
     gateway:
-      discovery:
-        locator:
-          enabled: true  # auto routes by serviceId
-      routes:
-        - id: user-service
-          uri: lb://user-service
-          predicates:
-            - Path=/users/**
-        - id: safeplace-service
-          uri: lb://safeplace-service
-          predicates:
-            - Path=/places/**
-        # add more explicit routes if needed
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
+          routes:
+            - id: user-service
+              uri: http://localhost:8081
+              predicates:
+                - Path=/users/**
+            - id: safeplace-service
+              uri: http://localhost:8082
+              predicates:
+                - Path=/places/**
+            - id: service3
+              uri: lb://service3
+              predicates:
+                - Path=/service3/**
 
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+    hostname: localhost
 
 management:
   endpoints:
     web:
       exposure:
-        include: health,metrics,env
+        include: "*"
