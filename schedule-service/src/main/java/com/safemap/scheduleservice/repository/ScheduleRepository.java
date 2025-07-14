@@ -10,4 +10,3 @@ import java.util.List;
 public interface ScheduleRepository extends MongoRepository<Schedule, String> {
     List<Schedule> findByPlaceId(String placeId);
 }
-

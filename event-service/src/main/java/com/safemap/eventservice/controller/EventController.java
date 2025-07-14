@@ -6,6 +6,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,16 +21,27 @@ public class EventController {
         this.service = service;
     }
 
+    /**
+     * Crear un nuevo evento.
+     */
     @PostMapping
-    public ResponseEntity<Event> create(@RequestBody Event event) {
-        return ResponseEntity.ok(service.create(event));
+    public ResponseEntity<Event> create(@RequestBody Event event, Principal principal) {
+        event.setReportedBy(principal != null ? principal.getName() : "anonymous"  ); // userId desde el token
+        Event created = service.create(event);
+        return ResponseEntity.created(URI.create("/events/" + created.getId())).body(created);
     }
 
+    /**
+     * Listar todos los eventos.
+     */
     @GetMapping
     public ResponseEntity<List<Event>> getAll() {
         return ResponseEntity.ok(service.findAll());
     }
 
+    /**
+     * Obtener un evento por ID.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Event> getById(@PathVariable String id) {
         return service.findById(id)
@@ -36,22 +49,31 @@ public class EventController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /**
+     * Listar eventos por lugar.
+     */
     @GetMapping("/place/{placeId}")
     public ResponseEntity<List<Event>> getByPlace(@PathVariable String placeId) {
         return ResponseEntity.ok(service.findByPlace(placeId));
     }
 
+    /**
+     * Buscar eventos por rango de fechas.
+     */
     @GetMapping("/between")
     public ResponseEntity<List<Event>> getByDateRange(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end
+    ) {
         return ResponseEntity.ok(service.findByDateRange(start, end));
     }
 
+    /**
+     * Eliminar evento por ID.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
 }
-

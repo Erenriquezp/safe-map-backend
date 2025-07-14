@@ -25,12 +25,12 @@ public class EventService {
         return repo.findAll();
     }
 
-    public Optional<Event> findById(String id) {
-        return repo.findById(id);
-    }
-
     public List<Event> findByPlace(String placeId) {
         return repo.findByPlaceId(placeId);
+    }
+
+    public Optional<Event> findById(String id) {
+        return repo.findById(id);
     }
 
     public List<Event> findByDateRange(LocalDateTime start, LocalDateTime end) {

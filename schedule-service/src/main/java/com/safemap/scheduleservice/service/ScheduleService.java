@@ -9,33 +9,44 @@ import java.util.Optional;
 
 @Service
 public class ScheduleService {
+
     private final ScheduleRepository repo;
 
     public ScheduleService(ScheduleRepository repo) {
         this.repo = repo;
     }
 
+    // CREATE
     public Schedule create(Schedule schedule) {
         return repo.save(schedule);
     }
 
+    // READ ALL
     public List<Schedule> findAll() {
         return repo.findAll();
     }
 
-    public List<Schedule> findByPlace(String placeId) {
-        return repo.findByPlaceId(placeId);
-    }
-
+    // READ by ID
     public Optional<Schedule> findById(String id) {
         return repo.findById(id);
     }
 
-    public Schedule update(String id, Schedule updated) {
-        updated.setId(id);
-        return repo.save(updated);
+    // READ by place
+    public List<Schedule> findByPlace(String placeId) {
+        return repo.findByPlaceId(placeId);
     }
 
+    // UPDATE
+    public Optional<Schedule> update(String id, Schedule updated) {
+        return repo.findById(id).map(existing -> {
+            existing.setDayOfWeek(updated.getDayOfWeek());
+            existing.setStartTime(updated.getStartTime());
+            existing.setEndTime(updated.getEndTime());
+            return repo.save(existing);
+        });
+    }
+
+    // DELETE
     public void delete(String id) {
         repo.deleteById(id);
     }
