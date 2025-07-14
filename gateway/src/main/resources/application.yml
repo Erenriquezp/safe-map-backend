@@ -17,7 +17,7 @@ spring:
             - id: user-service
               uri: lb://user-service
               predicates:
-                - Path=/users/**
+                - Path=/users/**, /auth/**
             - id: safeplace-service
               uri: lb://safeplace-service
               predicates:
