@@ -3,6 +3,7 @@ package com.safemap.safeplaceservice.controller;
 import com.safemap.safeplaceservice.model.Rating;
 import com.safemap.safeplaceservice.service.RatingService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -20,8 +21,9 @@ public class RatingController {
     }
 
     /**
-     * Agregar una calificación a un lugar.
+     * Agregar una calificación a un lugar (solo usuarios autenticados).
      */
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PostMapping
     public ResponseEntity<?> addRating(@PathVariable String placeId,
                                        @RequestBody Rating ratingRequest,
@@ -29,7 +31,7 @@ public class RatingController {
         try {
             Rating rating = Rating.builder()
                     .placeId(placeId)
-                    //.userId(principal.getName())  // userId desde el JWT
+                    .userId(principal.getName())  // userId desde el JWT
                     .score(ratingRequest.getScore())
                     .comment(ratingRequest.getComment())
                     .build();
@@ -44,7 +46,7 @@ public class RatingController {
     }
 
     /**
-     * Obtener todas las calificaciones de un lugar.
+     * Obtener todas las calificaciones de un lugar (público).
      */
     @GetMapping
     public ResponseEntity<List<Rating>> getAllRatings(@PathVariable String placeId) {

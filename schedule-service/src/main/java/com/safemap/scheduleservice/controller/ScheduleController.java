@@ -3,6 +3,7 @@ package com.safemap.scheduleservice.controller;
 import com.safemap.scheduleservice.model.Schedule;
 import com.safemap.scheduleservice.service.ScheduleService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -19,8 +20,9 @@ public class ScheduleController {
     }
 
     /**
-     * Crear un nuevo horario seguro.
+     * Crear un nuevo horario seguro (usuario autenticado).
      */
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PostMapping
     public ResponseEntity<Schedule> create(@RequestBody Schedule schedule) {
         Schedule created = service.create(schedule);
@@ -30,7 +32,7 @@ public class ScheduleController {
     }
 
     /**
-     * Listar todos los horarios.
+     * Listar todos los horarios (público).
      */
     @GetMapping
     public ResponseEntity<List<Schedule>> getAll() {
@@ -38,7 +40,7 @@ public class ScheduleController {
     }
 
     /**
-     * Obtener horarios por lugar.
+     * Obtener horarios por lugar (público).
      */
     @GetMapping("/place/{placeId}")
     public ResponseEntity<List<Schedule>> getByPlace(@PathVariable String placeId) {
@@ -46,7 +48,7 @@ public class ScheduleController {
     }
 
     /**
-     * Obtener un horario por ID.
+     * Obtener un horario por ID (público).
      */
     @GetMapping("/{id}")
     public ResponseEntity<Schedule> getById(@PathVariable String id) {
@@ -56,8 +58,9 @@ public class ScheduleController {
     }
 
     /**
-     * Actualizar un horario existente.
+     * Actualizar un horario existente (solo ADMIN).
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Schedule> update(@PathVariable String id, @RequestBody Schedule updated) {
         return service.update(id, updated)
@@ -66,8 +69,9 @@ public class ScheduleController {
     }
 
     /**
-     * Eliminar un horario por ID.
+     * Eliminar un horario por ID (solo ADMIN).
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
         service.delete(id);

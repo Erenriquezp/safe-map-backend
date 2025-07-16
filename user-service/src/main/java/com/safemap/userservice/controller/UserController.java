@@ -4,6 +4,7 @@ import com.safemap.userservice.model.User;
 
 import com.safemap.userservice.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -32,16 +33,18 @@ public class UserController {
     }
 
     /**
-     * Get all users.
+     * Obtener todos los usuarios (solo ADMIN).
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<User>> getAll() {
         return ResponseEntity.ok(service.findAll());
     }
 
     /**
-     * Get a single user by ID.
+     * Obtener usuario por ID (ADMIN o el mismo usuario).
      */
+    @PreAuthorize("hasRole('ADMIN') or #id == authentication.name")
     @GetMapping("/{id}")
     public ResponseEntity<User> getById(@PathVariable String id) {
         return service.findById(id)
@@ -61,8 +64,9 @@ public class UserController {
     }
 
     /**
-     * Delete a user by ID.
+     * Eliminar usuario (solo ADMIN).
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
         service.delete(id);

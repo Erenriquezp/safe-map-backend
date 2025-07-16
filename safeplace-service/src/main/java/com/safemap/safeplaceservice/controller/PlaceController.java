@@ -3,6 +3,7 @@ package com.safemap.safeplaceservice.controller;
 import com.safemap.safeplaceservice.model.Place;
 import com.safemap.safeplaceservice.service.PlaceService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -20,13 +21,12 @@ public class PlaceController {
     }
 
     /**
-     * Crear un nuevo lugar seguro.
+     * Crear un nuevo lugar seguro (usuario autenticado).
      */
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PostMapping
     public ResponseEntity<Place> create(@RequestBody Place place, Principal principal) {
-        // Obtener el userId desde el JWT ya validado
-        String userId = principal != null ? principal.getName() : "anonymous";
-        place.setCreatedBy(userId);
+        place.setCreatedBy(principal.getName());
         Place created = service.create(place);
         return ResponseEntity
                 .created(URI.create("/places/" + created.getId()))
@@ -34,7 +34,7 @@ public class PlaceController {
     }
 
     /**
-     * Listar todos los lugares.
+     * Listar todos los lugares (público).
      */
     @GetMapping
     public ResponseEntity<List<Place>> getAll() {
@@ -42,7 +42,7 @@ public class PlaceController {
     }
 
     /**
-     * Obtener un lugar por ID.
+     * Obtener un lugar por ID (público).
      */
     @GetMapping("/{id}")
     public ResponseEntity<Place> getById(@PathVariable String id) {
@@ -52,8 +52,9 @@ public class PlaceController {
     }
 
     /**
-     * Actualizar los datos de un lugar.
+     * Actualizar lugar (solo ADMIN o creador).
      */
+    @PreAuthorize("hasRole('ADMIN') or @placeSecurity.isOwner(#id, authentication.name)")
     @PutMapping("/{id}")
     public ResponseEntity<Place> update(@PathVariable String id, @RequestBody Place updated) {
         return service.update(id, updated)
@@ -62,8 +63,9 @@ public class PlaceController {
     }
 
     /**
-     * Eliminar un lugar por ID.
+     * Eliminar lugar (solo ADMIN o creador).
      */
+    @PreAuthorize("hasRole('ADMIN') or @placeSecurity.isOwner(#id, authentication.name)")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
         service.delete(id);

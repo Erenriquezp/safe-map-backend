@@ -4,6 +4,7 @@ import com.safemap.eventservice.model.Event;
 import com.safemap.eventservice.service.EventService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -22,8 +23,9 @@ public class EventController {
     }
 
     /**
-     * Crear un nuevo evento.
+     * Crear un nuevo evento (usuario autenticado).
      */
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PostMapping
     public ResponseEntity<Event> create(@RequestBody Event event, Principal principal) {
         event.setReportedBy(principal != null ? principal.getName() : "anonymous"  ); // userId desde el token
@@ -32,7 +34,7 @@ public class EventController {
     }
 
     /**
-     * Listar todos los eventos.
+     * Listar todos los eventos (público).
      */
     @GetMapping
     public ResponseEntity<List<Event>> getAll() {
@@ -40,7 +42,7 @@ public class EventController {
     }
 
     /**
-     * Obtener un evento por ID.
+     * Obtener un evento por ID (público).
      */
     @GetMapping("/{id}")
     public ResponseEntity<Event> getById(@PathVariable String id) {
@@ -50,7 +52,7 @@ public class EventController {
     }
 
     /**
-     * Listar eventos por lugar.
+     * Listar eventos por lugar (público).
      */
     @GetMapping("/place/{placeId}")
     public ResponseEntity<List<Event>> getByPlace(@PathVariable String placeId) {
@@ -58,7 +60,7 @@ public class EventController {
     }
 
     /**
-     * Buscar eventos por rango de fechas.
+     * Buscar eventos por rango de fechas (público).
      */
     @GetMapping("/between")
     public ResponseEntity<List<Event>> getByDateRange(
@@ -69,8 +71,9 @@ public class EventController {
     }
 
     /**
-     * Eliminar evento por ID.
+     * Eliminar evento por ID (solo ADMIN).
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
         service.delete(id);
