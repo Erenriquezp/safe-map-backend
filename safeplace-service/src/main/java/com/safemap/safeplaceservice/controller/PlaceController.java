@@ -1,5 +1,6 @@
 package com.safemap.safeplaceservice.controller;
 
+import com.safemap.safeplaceservice.dto.PlaceResponseDto;
 import com.safemap.safeplaceservice.model.Place;
 import com.safemap.safeplaceservice.service.PlaceService;
 import org.springframework.http.ResponseEntity;
@@ -71,4 +72,12 @@ public class PlaceController {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{id}/with-schedules")
+    public ResponseEntity<PlaceResponseDto> getWithSchedules(@PathVariable String id) {
+        return service.findWithSchedules(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
 }

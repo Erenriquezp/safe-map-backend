@@ -3,6 +3,7 @@ package com.safemap.userservice.controller;
 import com.safemap.userservice.model.User;
 
 import com.safemap.userservice.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class UserController {
      * Create a new User.
      */
     @PostMapping
-    public ResponseEntity<User> create(@RequestBody User user) {
+    public ResponseEntity<User> create(@Valid @RequestBody User user) {
         User created = service.create(user);
         // Return 201 with location header
         return ResponseEntity
@@ -57,7 +58,7 @@ public class UserController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<User> update(@PathVariable String id,
-                                       @RequestBody User user) {
+                                       @Valid @RequestBody User user) {
         return service.update(id, user)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
