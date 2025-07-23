@@ -21,6 +21,15 @@ public class UserService {
 
     // Create / Register
     public User create(User user) {
+        // Validar username único
+        repo.findByUsername(user.getUsername()).ifPresent(existing -> {
+            throw new IllegalArgumentException("Username already exists");
+        });
+
+        // Validar email único
+        repo.findByEmail(user.getEmail()).ifPresent(existing -> {
+            throw new IllegalArgumentException("Email already exists");
+        });
         // Hash password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         // Defaults

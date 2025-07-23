@@ -93,4 +93,9 @@ public class PlaceService {
                 .filter(p -> userId.equals(p.getCreatedBy()))
                 .toList();
     }
+
+    public List<Place> findSafePlaces(double minRating) {
+        return repository.findByAverageRatingGreaterThanEqual(minRating);
+    }
+
 }

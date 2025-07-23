@@ -79,5 +79,14 @@ public class PlaceController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+    /**
+     * Listar lugares seguros con rating mínimo (público).
+     */
+    @GetMapping("/safe")
+    public ResponseEntity<List<Place>> getSafePlaces(
+            @RequestParam(defaultValue = "4.0") double minRating) {
+        List<Place> safePlaces = service.findSafePlaces(minRating);
+        return ResponseEntity.ok(safePlaces);
+    }
 
 }
