@@ -98,4 +98,8 @@ public class PlaceService {
         return repository.findByAverageRatingGreaterThanEqual(minRating);
     }
 
+    public List<Place> createAll(List<Place> places) {
+        return repository.saveAll(places);
+    }
+
 }

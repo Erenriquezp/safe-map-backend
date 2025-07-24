@@ -89,4 +89,17 @@ public class PlaceController {
         return ResponseEntity.ok(safePlaces);
     }
 
+    /**
+     * Crear múltiples lugares seguros (bulk insert) - solo ADMIN.
+     */
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/bulk")
+    public ResponseEntity<List<Place>> createBulk(@RequestBody List<Place> places, Principal principal) {
+        String creatorId = principal.getName();
+        // Asignar el creador a cada lugar
+        places.forEach(place -> place.setCreatedBy(creatorId));
+        List<Place> createdPlaces = service.createAll(places);
+        return ResponseEntity.ok(createdPlaces);
+    }
+
 }
